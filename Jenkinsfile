@@ -112,7 +112,7 @@ pipeline {
                     <br />
                     <h1>Docker Images</h1>
                     <ul>
-                    ${}
+                    ${descTagLIs}
                     </ul>
                     """
 
