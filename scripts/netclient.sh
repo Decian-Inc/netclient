@@ -23,6 +23,7 @@ if [ "$TOKEN" != "" ]; then
     TOKEN_CMD="-t $TOKEN"
 fi
 
+echo "executing: /root/netclient join $TOKEN_CMD"
 /root/netclient join $TOKEN_CMD 
 if [ $? -ne 0 ]; then { echo "Failed to join, quitting." ; exit 1; } fi
 
