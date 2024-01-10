@@ -98,12 +98,7 @@ pipeline {
 
 
                     docker.withRegistry('https://nexus-registry.decian.net', 'nexus-docker-writer-username-password') {
-                          // Build and push the image
-                          // sh """
-                          //   docker build --build-arg VERSION=$version --push $dockerBuildCommandTags .
-                          // """
                           def buildCommand = "docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push $dockerBuildCommandTags ."
-                          sh "echo \"${buildCommand}\""
 
                           sh """
                               docker buildx create --name mbuilder --use --bootstrap
