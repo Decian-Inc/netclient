@@ -56,7 +56,7 @@ pipeline {
 
             steps {
                 script {
-                    def version = readFile "${env.WORKSPACE}/VERSION"
+                    def version = readFile("${env.WORKSPACE}/VERSION").trim()
                     (majorVersion, minorVersion, patchVersion, dx_patchVersion) = version.tokenize('.')
 
                    // display version info
