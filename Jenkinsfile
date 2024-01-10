@@ -15,8 +15,8 @@ pipeline {
     }
     environment {
         DOCKER_REGISTRY = 'nexus-registry.decian.net'
-        IMAGE_NAME = 'dx-healthchecker-py'
-        GIT_URL = 'git@github.com:Decian-Inc/healthchecker-py.git'
+        IMAGE_NAME = 'dx-netclient'
+        GIT_URL = 'git@github.com:Decian-Inc/netclient.git'
     }
 
     stages {
@@ -98,7 +98,6 @@ pipeline {
 
 
                     docker.withRegistry('https://nexus-registry.decian.net', 'nexus-docker-writer-username-password') {
-                        withNPM(npmrcConfig: 'nexus-npm-config') {
                           // Build and push the image
                           // sh """
                           //   docker build --build-arg VERSION=$version --push $dockerBuildCommandTags .
@@ -107,9 +106,8 @@ pipeline {
 
                           sh """
                               docker buildx create --name mbuilder --use --bootstrap
-                              docker buildx build --build-arg VERSION=$version --platform linux/amd64,linux/arm64,linux/arm/v7 --push $dockerBuildCommandTags .
+                              docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push $dockerBuildCommandTags .
                           """
-                        }
 
                     }
                 }
