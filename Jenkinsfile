@@ -80,7 +80,16 @@ pipeline {
             }
             steps {
                 script {
+                    def baseNetclientVersion = "${majorVersion}.${minorVersion}.${patchVersion}"
                     def version = "${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}"
+
+                    // specify target platforms
+                    def buildXPlatforms = []
+                    buildXPlatforms.add("linux/amd64")
+                    // buildXPlatforms.add("linux/arm64")
+                    // buildXPlatforms.add("linux/arm/v7")
+
+                    // specify docker tags
                     def dockerTags = []
                     dockerTags.add("${version}-${env.BRANCH_NAME.replaceAll("/", "-")}-${env.BUILD_NUMBER}")
                     dockerTags.add("${version}-${env.BRANCH_NAME.replaceAll("/", "-")}")
@@ -92,18 +101,32 @@ pipeline {
                         dockerTags.add("${majorVersion}")
                     }
 
-
-                    def dockerBuildCommandTags = dockerTags.collect { tag -> "-t $DOCKER_REGISTRY/$IMAGE_NAME:${tag}" }.join(' ')
+                    // build description
+                    def descTagLIs = dockerTags.collect { platform -> "<li>$platform}</li>" }.join('')
+                    def descPlatformLIs = dockerTags.collect { tag -> "<li>$DOCKER_REGISTRY/$IMAGE_NAME:${tag}</li>" }.join('')
+                    currentBuild.description = """
+                    <h1>Platforms</h1>
+                    <ul>
+                    ${descPlatformLIs}
+                    </ul>
+                    <br />
+                    <h1>Docker Images</h1>
+                    <ul>
+                    ${descTagLIs}
+                    </ul>
+                    """
 
 
 
                     docker.withRegistry('https://nexus-registry.decian.net', 'nexus-docker-writer-username-password') {
-                          def buildCommand = "docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push $dockerBuildCommandTags ."
+                        def buildxCmdPlatforms = buildXPlatforms.join(',')
+                        def buildxCmdTags = dockerTags.collect { tag -> "-t $DOCKER_REGISTRY/$IMAGE_NAME:${tag}" }.join(' ')
+                        def buildxCmd = "docker buildx build --build-arg version=$baseNetclientVersion --platform ${buildxCmdPlatforms} --push $buildxCmdTags ."
 
-                          sh """
-                              docker buildx create --name mbuilder --use --bootstrap
-                              ${buildCommand}
-                          """
+                        sh """
+                            docker buildx create --name mbuilder --use --bootstrap
+                            ${buildxCmd}
+                        """
 
                     }
                 }
