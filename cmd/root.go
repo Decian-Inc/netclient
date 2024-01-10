@@ -60,12 +60,13 @@ func init() {
 }
 
 func initConfig() {
+	slog.Info("initializing netclient -st")
 	flags := viper.New()
 	flags.BindPFlags(rootCmd.Flags())
 	InitConfig(flags)
 	nc := wireguard.NewNCIface(config.Netclient(), config.GetNodes())
 	nc.Name = "netmaker-test"
-	nc.Name = ncutils.GetInterfaceName()
+	nc.Name = "netmaker-" + ncutils.GetInterfaceName()
 	if runtime.GOOS == "darwin" {
 		nc.Name = "utun70"
 	}
