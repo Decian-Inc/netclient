@@ -99,8 +99,12 @@ pipeline {
                     docker.withRegistry('https://nexus-registry.decian.net', 'nexus-docker-writer-username-password') {
                         withNPM(npmrcConfig: 'nexus-npm-config') {
                           // Build and push the image
+                          // sh """
+                          //   docker build --build-arg VERSION=$version --push $dockerBuildCommandTags .
+                          // """
                           sh """
-                            docker build --build-arg VERSION=$version --push $dockerBuildCommandTags .
+                              docker buildx create --name mbuilder --use --bootstrap
+                              docker buildx build --build-arg VERSION=$version --platform linux/amd64, linux/arm64, linux/arm/v7 --push $dockerBuildCommandTags .
                           """
                         }
 
