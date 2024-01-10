@@ -102,8 +102,8 @@ pipeline {
                     }
 
                     // build description
-                    def descTagLIs = buildXPlatforms.collect { platform -> "<li>$platform</li>" }.join('')
-                    def descPlatformLIs = dockerTags.collect { tag -> "<li>$DOCKER_REGISTRY/$IMAGE_NAME:${tag}</li>" }.join('')
+                    def descPlatformLIs= buildXPlatforms.collect { platform -> "<li>$platform</li>" }.join('')
+                    def descTagLIs = dockerTags.collect { tag -> "<li>$DOCKER_REGISTRY/$IMAGE_NAME:${tag}</li>" }.join('')
                     currentBuild.description = """
                     <h1>Platforms</h1>
                     <ul>
@@ -112,7 +112,7 @@ pipeline {
                     <br />
                     <h1>Docker Images</h1>
                     <ul>
-                    ${descTagLIs}
+                    ${}
                     </ul>
                     """
 
