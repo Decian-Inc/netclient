@@ -81,10 +81,9 @@ pipeline {
             steps {
                 script {
                     def version = "${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}"
-                    def dockerTags = [
-                        "${version}-${env.BRANCH_NAME.replaceAll("/", "-")}-${env.BUILD_NUMBER}",
-                        "${version}-${env.BRANCH_NAME.replaceAll("/", "-")}"
-                    ]
+                    def dockerTags = []
+                    dockerTags.add("${version}-${env.BRANCH_NAME.replaceAll("/", "-")}-${env.BUILD_NUMBER}")
+                    dockerTags.add("${version}-${env.BRANCH_NAME.replaceAll("/", "-")}")
 
                     if (env.BRANCH_NAME == 'main') {
                         dockerTags.add("${version}")
@@ -97,12 +96,13 @@ pipeline {
                     def dockerBuildCommandTags = dockerTags.collect { tag -> "-t $DOCKER_REGISTRY/$IMAGE_NAME:${tag}" }.join(' ')
 
 
+
                     docker.withRegistry('https://nexus-registry.decian.net', 'nexus-docker-writer-username-password') {
                           // Build and push the image
                           // sh """
                           //   docker build --build-arg VERSION=$version --push $dockerBuildCommandTags .
                           // """
-                          sh "echo \"docker buildx build --build-arg VERSION=$version --platform linux/amd64,linux/arm64,linux/arm/v7 --push $dockerBuildCommandTags .\""
+                          sh "echo \"docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push $dockerBuildCommandTags . \""
 
                           sh """
                               docker buildx create --name mbuilder --use --bootstrap
