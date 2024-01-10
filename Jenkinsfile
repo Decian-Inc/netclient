@@ -104,7 +104,7 @@ pipeline {
                           // """
                           sh """
                               docker buildx create --name mbuilder --use --bootstrap
-                              docker buildx build --build-arg VERSION=$version --platform linux/amd64, linux/arm64, linux/arm/v7 --push $dockerBuildCommandTags .
+                              docker buildx build --build-arg VERSION=$version --platform linux/amd64,linux/arm64,linux/arm/v7 --push $dockerBuildCommandTags .
                           """
                         }
 
