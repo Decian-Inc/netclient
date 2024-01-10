@@ -98,6 +98,7 @@ func createChain(iptables *iptables.IPTables, table, newChain string) error {
 
 // iptablesManager.ForwardRule inserts forwarding rules
 func (i *iptablesManager) ForwardRule() error {
+
 	i.mux.Lock()
 	defer i.mux.Unlock()
 	logger.Log(0, "adding forwarding rule")
@@ -109,7 +110,7 @@ func (i *iptablesManager) ForwardRule() error {
 	iptablesClient.DeleteIfExists(dropRuleFilter.table, dropRuleFilter.chain, dropRuleFilter.rule...)
 	iptablesClient.DeleteIfExists(dropRuleNat.table, dropRuleNat.chain, dropRuleNat.rule...)
 	createChain(iptablesClient, defaultIpTable, netmakerFilterChain)
-	ruleSpec := []string{"-i", "netmaker", "-j", "ACCEPT"}
+	ruleSpec := []string{"-i", ncutils.GetInterfaceName(), "-j", "ACCEPT"}
 	ruleSpec = appendNetmakerCommentToRule(ruleSpec)
 	ok, err := i.ipv4Client.Exists(defaultIpTable, iptableFWDChain, ruleSpec...)
 	if err == nil && !ok {
@@ -123,7 +124,7 @@ func (i *iptablesManager) ForwardRule() error {
 			logger.Log(1, fmt.Sprintf("failed to add rule: %v Err: %v", ruleSpec, err.Error()))
 		}
 	}
-	ruleSpec = []string{"-o", "netmaker", "-j", "ACCEPT"}
+	ruleSpec = []string{"-o", ncutils.GetInterfaceName(), "-j", "ACCEPT"}
 	ruleSpec = appendNetmakerCommentToRule(ruleSpec)
 	ok, err = i.ipv4Client.Exists(defaultIpTable, iptableFWDChain, ruleSpec...)
 	if err == nil && !ok {
