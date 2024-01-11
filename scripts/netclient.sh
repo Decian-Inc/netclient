@@ -24,12 +24,12 @@ if [ "$TOKEN" != "" ]; then
 fi
 
 echo "executing: /root/netclient join $TOKEN_CMD"
-/root/netclient join $TOKEN_CMD 
+/root/netclient join $TOKEN_CMD -v 3
 if [ $? -ne 0 ]; then { echo "Failed to join, quitting." ; exit 1; } fi
 
 echo "[netclient] Starting netclient daemon"
 
-/root/netclient daemon &
+/root/netclient daemon -v 3 &
 
 wait $!
 echo "[netclient] exiting"

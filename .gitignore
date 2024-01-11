@@ -19,3 +19,5 @@ gui/**/dist/
 backup/*
 dist/*
 /.idea
+
+.env

@@ -503,9 +503,9 @@ func IPIsPrivate(ipnet net.IP) bool {
 
 // GetInterfaceName - fetches the interface name
 func GetInterfaceName() string {
-	if env_value, ok := os.LookupEnv("NETCLIENT_INTERFACE_NAME"); ok {
-		return env_value
-	}
+	// if env_value, ok := os.LookupEnv("NETCLIENT_INTERFACE_NAME"); ok {
+	// 	return env_value
+	// }
 
 	if runtime.GOOS == "darwin" {
 		return "utun69"
