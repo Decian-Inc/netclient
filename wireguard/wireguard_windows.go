@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"net/netip"
+	"os/exec"
 
 	"github.com/gravitl/netclient/ncutils"
 	"github.com/gravitl/netmaker/logger"
@@ -30,6 +31,13 @@ func (nc *NCIface) Create() error {
 		}
 	} else {
 		slog.Info("re-using existing adapter")
+	}
+
+	// disable dns registration; dns registration, which appears to be a Windows default, causes problems on Domain Controllers
+	cmd := exec.Command("powershell", "-nologo", "-noprofile", "-command", "Set-DnsClient", ncutils.GetInterfaceName(), "-RegisterThisConnectionsAddress", "$False")
+	_, cmdErr := cmd.CombinedOutput()
+	if cmdErr != nil {
+		slog.Error("failed to disable dns registration", "error", cmdErr)
 	}
 
 	slog.Info("created Windows tunnel")
