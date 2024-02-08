@@ -143,19 +143,18 @@ pipeline {
             steps {
                 script {
                   sh "GOOS=windows GOARCH=amd64 go build -o netclient.exe main.go"
-                  rtUpload (
-                      serverId: 'dx-artifactory',
-                      spec: '''{
-                              "files": [
-                              {
-                                  "pattern": "netclient.exe",
-                                  "target": "generic-local/netclient/${env.BRANCH_NAME.replaceAll("/", "-")}/${env.BUILD_NUMBER}/"
-                              }
-                          ]
-                      }'''
-                  )
                 }
-
+                rtUpload (
+                    serverId: 'dx-artifactory',
+                    spec: """{
+                            "files": [
+                            {
+                                "pattern": "netclient.exe",
+                                "target": "generic-local/netclient/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
+                            }
+                        ]
+                    }"""
+                )
             }
         }
 
