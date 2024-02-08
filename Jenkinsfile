@@ -145,26 +145,17 @@ pipeline {
                   sh "GOOS=windows GOARCH=amd64 go build -o netclient.exe main.go"
 
                 }
-              rtUpload (
-                  serverId: 'dx-artifactory',
-                  spec: '''{
-                        "files": [
-                          {
-                            "pattern": "netclient.exe",
-                            "target": "generic-local/netclient/${env.BRANCH_NAME.replaceAll("/", "-")}/${env.BUILD_NUMBER}/"
-                          }
-                      ]
-                  }''',
-
-                  // Optional - Associate the uploaded files with the following custom build name and build number,
-                  // as build artifacts.
-                  // If not set, the files will be associated with the default build name and build number (i.e the 
-                  // the Jenkins job name and number).
-                  // buildName: 'holyFrog',
-                  // buildNumber: '42',
-                  // // Optional - Only if this build is associated with a project in Artifactory, set the project key as follows.
-                  // project: 'my-project-key'
-              )                
+                rtUpload (
+                    serverId: 'dx-artifactory',
+                    spec: '''{
+                            "files": [
+                            {
+                                "pattern": "netclient.exe",
+                                "target": "generic-local/netclient/${env.BRANCH_NAME.replaceAll("/", "-")}/${env.BUILD_NUMBER}/"
+                            }
+                        ]
+                    }'''
+                )
             }
         }
 
