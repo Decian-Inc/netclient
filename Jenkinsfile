@@ -172,7 +172,19 @@ pipeline {
                                 }
                             ]
                         }"""
-                    )                    
+                    )
+                    rtUpload (
+                        serverId: 'dx-artifactory',
+                        spec: """{
+                                "files": [
+                                {
+                                    "pattern": "netclient.exe",
+                                    "target": "generic-local/netclient/${env.BRANCH_NAME}/latest/"
+                                }
+                            ]
+                        }"""
+                    )
+
                 }
 
 
