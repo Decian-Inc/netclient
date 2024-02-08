@@ -2,8 +2,8 @@ package wireguard
 
 import (
 	"fmt"
-	"net"
 	"net/netip"
+	"os/exec"
 
 	"github.com/gravitl/netclient/ncutils"
 	"github.com/gravitl/netmaker/logger"
@@ -30,6 +30,13 @@ func (nc *NCIface) Create() error {
 		}
 	} else {
 		slog.Info("re-using existing adapter")
+	}
+
+	// disable dns registration; dns registration, which appears to be a Windows default, causes problems on Domain Controllers
+	cmd := exec.Command("powershell", "-nologo", "-noprofile", "-command", "Set-DnsClient", ncutils.GetInterfaceName(), "-RegisterThisConnectionsAddress", "$False")
+	_, cmdErr := cmd.CombinedOutput()
+	if cmdErr != nil {
+		slog.Error("failed to disable dns registration", "error", cmdErr)
 	}
 
 	slog.Info("created Windows tunnel")
@@ -63,14 +70,23 @@ func SetRoutes(addrs []ifaceAddress) {
 			addr.Network.String() == "::/0" {
 			continue
 		}
-		mask := net.IP(addr.Network.Mask)
-		slog.Info("adding route to interface", "route", fmt.Sprintf("%s -> %s", addr.IP.String(), addr.Network.String()))
-		cmd := fmt.Sprintf("route -p add %s MASK %v %s", addr.IP.String(),
-			mask,
-			addr.IP.String())
-		_, err := ncutils.RunCmd(cmd, false)
-		if err != nil {
-			slog.Error("failed to apply", "egress range", addr.IP.String())
+		// Fixes route setting for Windows (via PR @ https://github.com/gravitl/netclient/pull/630)
+		if addr.Network.IP.To4() != nil {
+			slog.Info("adding ipv4 route to interface", "route", fmt.Sprintf("%s -> %s", addr.IP.String(), addr.Network.String()))
+			cmd := fmt.Sprintf("netsh int ipv4 add route %s interface=%s nexthop=%s store=%s",
+				addr.Network.String(), ncutils.GetInterfaceName(), "0.0.0.0", "active")
+			_, err := ncutils.RunCmd(cmd, false)
+			if err != nil {
+				slog.Error("failed to apply", "ipv4 egress range", addr.Network.String())
+			}
+		} else {
+			slog.Info("adding ipv6 route to interface", "route", fmt.Sprintf("%s -> %s", addr.IP.String(), addr.Network.String()))
+			cmd := fmt.Sprintf("netsh int ipv6 add route %s interface=%s nexthop=%s store=%s",
+				addr.Network.String(), ncutils.GetInterfaceName(), "::", "active")
+			_, err := ncutils.RunCmd(cmd, false)
+			if err != nil {
+				slog.Error("failed to apply", "ipv6 egress range", addr.Network.String())
+			}
 		}
 	}
 }
