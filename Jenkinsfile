@@ -11,7 +11,7 @@ pipeline {
         label 'ubuntu22-vm'
     }
 
-    tools { go '1.21.6'}
+    tools { go 'Default'}
 
     options {
         disableConcurrentBuilds(abortPrevious: false)
