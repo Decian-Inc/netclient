@@ -151,12 +151,15 @@ pipeline {
                 script {
                   sh "GOOS=windows GOARCH=amd64 go build -o netclient.exe main.go"
                 }
-                def targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
-                if (anyOf { patchIncrementBranchPatterns.collect { pattern ->
-                    expression { env.BRANCH_NAME ==~ pattern }
-                } }) {
-                    targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${version}/"
+                script {
+                    def targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
+                    if (anyOf { patchIncrementBranchPatterns.collect { pattern ->
+                        expression { env.BRANCH_NAME ==~ pattern }
+                    } }) {
+                        targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${version}/"
+                    }
                 }
+
                 rtUpload (
                     serverId: 'dx-artifactory',
                     spec: """{
