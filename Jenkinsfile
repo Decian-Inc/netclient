@@ -69,7 +69,7 @@ pipeline {
 
                     if (env.BRANCH_NAME == 'dcx/main' && !buildSkipped) {
                         // Bump Patch Version, commit
-                        patchVersion = patchVersion.toInteger() + 1
+                        dx_patchVersion = dx_patchVersion.toInteger() + 1
                         echo "New Version: ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}"
                         sh "echo ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion} > VERSION"
                     }
