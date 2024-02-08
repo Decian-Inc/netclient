@@ -5,7 +5,7 @@ def patchVersion = ''
 def dx_patchVersion = ''
 def buildSkipped = false
 
-def patchIncrementBranchPatterns = ['^dcx/main', '^dcx/releases/.*']
+def patchIncrementBranchPatterns = ['^dcx/main','^dcx/releases/.*']
 
 
 pipeline {
@@ -106,7 +106,6 @@ pipeline {
                             expression { env.BRANCH_NAME ==~ pattern }
                         } }) {
                         dockerTags.add("${version}")
-                        dockerTags.add("${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}")
                         dockerTags.add("${majorVersion}.${minorVersion}.${patchVersion}")
                         dockerTags.add("${majorVersion}.${minorVersion}")
                         dockerTags.add("${majorVersion}")
@@ -152,13 +151,19 @@ pipeline {
                 script {
                   sh "GOOS=windows GOARCH=amd64 go build -o netclient.exe main.go"
                 }
+                def targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
+                if (anyOf { patchIncrementBranchPatterns.collect { pattern ->
+                    expression { env.BRANCH_NAME ==~ pattern }
+                } }) {
+                    targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${version}/"
+                }
                 rtUpload (
                     serverId: 'dx-artifactory',
                     spec: """{
                             "files": [
                             {
                                 "pattern": "netclient.exe",
-                                "target": "generic-local/netclient/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
+                                "target": "${targetPath}"
                             }
                         ]
                     }"""
