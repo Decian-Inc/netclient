@@ -10,6 +10,9 @@ pipeline {
     agent {
         label 'ubuntu22-vm'
     }
+
+    tools { go '1.21.6'}
+
     options {
         disableConcurrentBuilds(abortPrevious: false)
     }
