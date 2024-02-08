@@ -63,7 +63,7 @@ pipeline {
             steps {
                 script {
                     preIncVersion = readFile("${env.WORKSPACE}/VERSION").trim()
-                    (majorVersion, minorVersion, patchVersion, dx_patchVersion) = version.tokenize('.')
+                    (majorVersion, minorVersion, patchVersion, dx_patchVersion) = preIncVersion.tokenize('.')
 
                    // display version info
                     echo "Current Version: ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}"
