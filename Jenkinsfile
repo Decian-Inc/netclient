@@ -56,7 +56,9 @@ pipeline {
         }
 
         stage('Version Management') {
-
+            when {
+                expression { return !buildSkipped }
+            }
             steps {
                 script {
                     def version = readFile("${env.WORKSPACE}/VERSION").trim()
@@ -164,10 +166,10 @@ pipeline {
             }
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'main') {
+                    if (env.BRANCH_NAME == 'dcx/main') {
                         sh "git add VERSION"
                         sh "git commit -m '[skip ci] Update VERSION'"
-                        sh "git push origin HEAD:main"
+                        sh "git push origin HEAD:dcx/main"
                     }
 
                 }
