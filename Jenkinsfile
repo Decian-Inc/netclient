@@ -150,7 +150,7 @@ pipeline {
                             "files": [
                             {
                                 "pattern": "netclient.exe",
-                                "target": "generic-local/netclient/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
+                                "target": "generic-local/netclient/${env.BRANCH_NAME}/"
                             }
                         ]
                     }"""
