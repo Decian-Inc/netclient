@@ -5,7 +5,7 @@ def patchVersion = ''
 def dx_patchVersion = ''
 def buildSkipped = false
 
-def patchIncrementBranchPatterns = ['^dcx\/main', '^dcx\/releases\/.*']
+def patchIncrementBranchPatterns = ['^dcx/main', '^dcx/releases/.*']
 
 
 pipeline {
