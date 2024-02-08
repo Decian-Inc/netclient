@@ -5,6 +5,8 @@ def patchVersion = ''
 def dx_patchVersion = ''
 def buildSkipped = false
 
+def patchIncrementBranchPatterns = ['^dcx\/main', '^dcx\/releases\/.*']
+
 
 pipeline {
     agent {
@@ -56,9 +58,6 @@ pipeline {
         }
 
         stage('Version Management') {
-            when {
-                expression { return !buildSkipped }
-            }
             steps {
                 script {
                     def version = readFile("${env.WORKSPACE}/VERSION").trim()
@@ -66,13 +65,17 @@ pipeline {
 
                    // display version info
                     echo "Current Version: ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}"
-
-                    if (env.BRANCH_NAME == 'dcx/main' && !buildSkipped) {
-                        // Bump Patch Version, commit
-                        dx_patchVersion = dx_patchVersion.toInteger() + 1
-                        echo "New Version: ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}"
-                        sh "echo ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion} > VERSION"
+                    if (!buildSkipped) {
+                        if (anyOf { patchIncrementBranchPatterns.collect { pattern ->
+                            expression { env.BRANCH_NAME ==~ pattern }
+                        } }) {
+                            // Bump Patch Version, commit
+                            dx_patchVersion = dx_patchVersion.toInteger() + 1
+                            echo "New Version: ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}"
+                            sh "echo ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion} > VERSION"
+                        }
                     }
+
                     currentBuild.displayName = "# ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion} | ${BRANCH_NAME}"
 
                 }
@@ -99,8 +102,11 @@ pipeline {
                     dockerTags.add("${version}-${env.BRANCH_NAME.replaceAll("/", "-")}-${env.BUILD_NUMBER}")
                     dockerTags.add("${version}-${env.BRANCH_NAME.replaceAll("/", "-")}")
 
-                    if (env.BRANCH_NAME == 'main') {
+                    if (anyOf { patchIncrementBranchPatterns.collect { pattern ->
+                            expression { env.BRANCH_NAME ==~ pattern }
+                        } }) {
                         dockerTags.add("${version}")
+                        dockerTags.add("${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}")
                         dockerTags.add("${majorVersion}.${minorVersion}.${patchVersion}")
                         dockerTags.add("${majorVersion}.${minorVersion}")
                         dockerTags.add("${majorVersion}")
@@ -166,10 +172,12 @@ pipeline {
             }
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'dcx/main') {
+                    if (anyOf { patchIncrementBranchPatterns.collect { pattern ->
+                            expression { env.BRANCH_NAME ==~ pattern }
+                    } }) {
                         sh "git add VERSION"
                         sh "git commit -m '[skip ci] Update VERSION'"
-                        sh "git push origin HEAD:dcx/main"
+                        sh "git push origin HEAD:${BRANCH_NAME}"
                     }
 
                 }
