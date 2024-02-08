@@ -161,19 +161,21 @@ pipeline {
                     } }) {
                         targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${preIncVersion}/"
                     }
+
+                    rtUpload (
+                        serverId: 'dx-artifactory',
+                        spec: """{
+                                "files": [
+                                {
+                                    "pattern": "netclient.exe",
+                                    "target": "${targetPath}"
+                                }
+                            ]
+                        }"""
+                    )                    
                 }
 
-                rtUpload (
-                    serverId: 'dx-artifactory',
-                    spec: """{
-                            "files": [
-                            {
-                                "pattern": "netclient.exe",
-                                "target": "${targetPath}"
-                            }
-                        ]
-                    }"""
-                )
+
             }
         }
 
