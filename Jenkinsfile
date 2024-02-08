@@ -97,6 +97,7 @@ pipeline {
                     dockerTags.add("${version}-${env.BRANCH_NAME.replaceAll("/", "-")}-${env.BUILD_NUMBER}")
                     dockerTags.add("${version}-${env.BRANCH_NAME.replaceAll("/", "-")}")
 
+
                     if (env.BRANCH_NAME == 'main') {
                         dockerTags.add("${version}")
                         dockerTags.add("${majorVersion}.${minorVersion}.${patchVersion}")
