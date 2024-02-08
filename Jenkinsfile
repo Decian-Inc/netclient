@@ -4,6 +4,8 @@ def minorVersion = ''
 def patchVersion = ''
 def dx_patchVersion = ''
 def buildSkipped = false
+def preIncVersion = ''
+def postIncVersion = ''
 
 def patchIncrementBranchPatterns = ['^dcx/main','^dcx/releases/.*']
 
@@ -60,7 +62,7 @@ pipeline {
         stage('Version Management') {
             steps {
                 script {
-                    def version = readFile("${env.WORKSPACE}/VERSION").trim()
+                    preIncVersion = readFile("${env.WORKSPACE}/VERSION").trim()
                     (majorVersion, minorVersion, patchVersion, dx_patchVersion) = version.tokenize('.')
 
                    // display version info
@@ -73,6 +75,7 @@ pipeline {
                             dx_patchVersion = dx_patchVersion.toInteger() + 1
                             echo "New Version: ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion}"
                             sh "echo ${majorVersion}.${minorVersion}.${patchVersion}.${dx_patchVersion} > VERSION"
+                            postIncVersion = readFile("${env.WORKSPACE}/VERSION").trim()
                         }
                     }
 
@@ -156,22 +159,21 @@ pipeline {
                     if (anyOf { patchIncrementBranchPatterns.collect { pattern ->
                         expression { env.BRANCH_NAME ==~ pattern }
                     } }) {
-                        targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${version}/"
+                        targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${preIncVersion}/"
                     }
-                    rtUpload (
-                        serverId: 'dx-artifactory',
-                        spec: """{
-                                "files": [
-                                {
-                                    "pattern": "netclient.exe",
-                                    "target": "${targetPath}"
-                                }
-                            ]
-                        }"""
-                    )
                 }
 
-
+                rtUpload (
+                    serverId: 'dx-artifactory',
+                    spec: """{
+                            "files": [
+                            {
+                                "pattern": "netclient.exe",
+                                "target": "${targetPath}"
+                            }
+                        ]
+                    }"""
+                )
             }
         }
 
