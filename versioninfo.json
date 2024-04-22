@@ -4,7 +4,7 @@
             "Major": 0,
             "Minor": 21,
             "Patch": 0,
-            "Build": 0
+            "Build": 3
         },
         "ProductVersion": {
             "Major": 0,
@@ -20,7 +20,7 @@
     },
     "StringFileInfo": {
         "Comments": "",
-        "CompanyName": "Netmaker",
+        "CompanyName": "Decian, Inc",
         "FileDescription": "",
         "FileVersion": "",
         "InternalName": "",
@@ -28,8 +28,8 @@
         "LegalTrademarks": "",
         "OriginalFilename": "",
         "PrivateBuild": "",
-        "ProductName": "Netclient",
-        "ProductVersion": "v0.21.0.0",
+        "ProductName": "DxNetclient",
+        "ProductVersion": "v0.21.0.3",
         "SpecialBuild": ""
     },
     "VarFileInfo": {
@@ -38,6 +38,6 @@
             "CharsetID": "04B0"
         }
     },
-    "IconPath": "resources/windows/netclient.ico",
-    "ManifestPath": "resources/windows/netclient.exe.manifest.xml"
+    "IconPath": "resources/windows/dxnetclient.ico",
+    "ManifestPath": "resources/windows/dxnetclient.exe.manifest.xml"
 }

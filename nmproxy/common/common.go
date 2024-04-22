@@ -11,7 +11,7 @@ const (
 	// MacAppDataPath - mac path
 	MacAppDataPath = "/Applications/Netclient/"
 	// WindowsAppDataPath - windows path
-	WindowsAppDataPath = "C:\\Program Files (x86)\\Netclient\\"
+	WindowsAppDataPath = "C:\\Program Files (x86)\\DxNetclient\\"
 )
 
 // GetDataPath - returns path to netclient config directory

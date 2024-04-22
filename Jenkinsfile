@@ -152,7 +152,7 @@ pipeline {
             }
             steps {
                 script {
-                  sh "GOOS=windows GOARCH=amd64 go build -o netclient.exe main.go"
+                  sh "GOOS=windows GOARCH=amd64 go build -o dxnetclient.exe main.go"
                 }
                 script {
                     def targetPath = "generic-local/netclient/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
@@ -167,7 +167,7 @@ pipeline {
                         spec: """{
                                 "files": [
                                 {
-                                    "pattern": "netclient.exe",
+                                    "pattern": "dxnetclient.exe",
                                     "target": "${targetPath}"
                                 }
                             ]
@@ -178,7 +178,7 @@ pipeline {
                         spec: """{
                                 "files": [
                                 {
-                                    "pattern": "netclient.exe",
+                                    "pattern": "dxnetclient.exe",
                                     "target": "generic-local/netclient/${env.BRANCH_NAME}/latest/"
                                 }
                             ]

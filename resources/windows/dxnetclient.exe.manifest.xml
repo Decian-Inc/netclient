@@ -3,7 +3,7 @@
     <assemblyIdentity
             version="0.21.0.0"
             processorArchitecture="*"
-            name="netclient.exe"
+            name="dxnetclient.exe"
             type="win32"
     />
     <description>Netclient</description>

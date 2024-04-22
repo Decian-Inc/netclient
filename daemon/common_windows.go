@@ -92,8 +92,8 @@ func cleanUp() error {
 func writeServiceConfig() error {
 
 	scriptString := fmt.Sprintf(`<service>
-<id>netclient</id>
-<name>netclient</name>
+<id>dxnetclient</id>
+<name>dxnetclient</name>
 <description>Manages Windows Netclient Hosts on one or more Netmaker networks.</description>
 <executable>%s</executable>
 <arguments>daemon</arguments>
@@ -101,7 +101,7 @@ func writeServiceConfig() error {
 <startmode>Automatic</startmode>
 <delayedAutoStart>true</delayedAutoStart>
 </service>
-`, strings.Replace(config.GetNetclientPath()+"netclient.exe", `\\`, `\`, -1))
+`, strings.Replace(config.GetNetclientPath()+"dxnetclient.exe", `\\`, `\`, -1))
 	if !ncutils.FileExists(serviceConfigPath) {
 		err := os.WriteFile(serviceConfigPath, []byte(scriptString), 0600)
 		if err != nil {

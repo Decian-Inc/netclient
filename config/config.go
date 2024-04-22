@@ -26,7 +26,7 @@ const (
 	// MacAppDataPath - mac path
 	MacAppDataPath = "/Applications/Netclient/"
 	// WindowsAppDataPath - windows path
-	WindowsAppDataPath = "C:\\Program Files (x86)\\Netclient\\"
+	WindowsAppDataPath = "C:\\Program Files (x86)\\DxNetclient\\"
 	// Timeout timelimit for obtaining/releasing lockfile
 	Timeout = time.Second * 5
 	// ConfigLockfile lockfile to control access to config file
@@ -240,7 +240,7 @@ func GetNetclientPath() string {
 func GetNetclientInstallPath() string {
 	switch runtime.GOOS {
 	case "windows":
-		return GetNetclientPath() + "netclient.exe"
+		return GetNetclientPath() + "dxnetclient.exe"
 	case "macos":
 		return "/usr/local/bin/netclient"
 	default:
