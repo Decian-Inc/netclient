@@ -72,9 +72,10 @@ func SetRoutes(addrs []ifaceAddress) {
 		}
 		// Fixes route setting for Windows (via PR @ https://github.com/gravitl/netclient/pull/630)
 		if addr.Network.IP.To4() != nil {
-			slog.Info("adding ipv4 route to interface", "route", fmt.Sprintf("%s -> %s", addr.IP.String(), addr.Network.String()))
+			slog.Error("adding ipv4 route to interface", "route", fmt.Sprintf("%s -> %s -> %s", addr.IP.String(), addr.Network.String(), addr.Network.IP.String()))
 			cmd := fmt.Sprintf("netsh int ipv4 add route %s interface=%s nexthop=%s store=%s",
 				addr.Network.String(), ncutils.GetInterfaceName(), "0.0.0.0", "active")
+
 			_, err := ncutils.RunCmd(cmd, false)
 			if err != nil {
 				slog.Error("failed to apply", "ipv4 egress range", addr.Network.String())
